@@ -11,6 +11,9 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class RecentDocuments extends BaseWidget
 {
+
+    protected static bool $isLazy = true;
+
     protected static ?int $sort = 3;
     protected int | string | array $columnSpan = 'full';
 
@@ -20,6 +23,7 @@ class RecentDocuments extends BaseWidget
             ->query(
             // Mengambil 5 dokumen terakhir milik user
                 GeneratedDocument::query()
+                    ->with('template')
                     ->where('user_id', auth()->id())
                     ->latest()
                     ->limit(5)

@@ -3,11 +3,13 @@
 namespace App\Filament\Resources\GeneratedDocuments\Tables;
 
 use App\Models\GeneratedDocument;
-use Filament\Actions\Action;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Actions\ViewAction; // <- benar untuk Table view action
+use Filament\Tables\Actions\Action;     // <- benar untuk Table generic action (download dll)
 use Illuminate\Support\Facades\Storage;
+
 
 class GeneratedDocumentsTable
 {
@@ -15,6 +17,8 @@ class GeneratedDocumentsTable
     {
         return $table
             ->defaultSort('created_at', 'desc')
+            ->defaultPaginationPageOption(20) // batasi default pagination
+            ->paginated([20, 50, 100]) // opsi pagination
             ->columns([
                 TextColumn::make('template.name')
                     ->sortable(),
@@ -24,25 +28,27 @@ class GeneratedDocumentsTable
                     ->sortable(),
 
                 TextColumn::make('filled_data')
-                    ->label('Data Terisi')
-                    ->formatStateUsing(fn ($state) => json_encode($state, JSON_PRETTY_PRINT)) // tampilkan JSON rapi
-                    ->limit(50) // biar nggak kepanjangan
-                    ->tooltip(fn ($state) => json_encode($state, JSON_PRETTY_PRINT)),
+                    ->label('Preview Data')
+                    ->formatStateUsing(fn ($state, $record) => collect($record->filled_data)
+                            ->take(2)
+                            ->map(fn($v, $k) => "$k: $v")
+                            ->implode(', ') . ' ...')
+                    ->limit(50)
+                    ->tooltip('Klik Lihat untuk detail'),
 
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable(),
             ])
             ->filters([
-                // filter template
                 SelectFilter::make('template_id')
                     ->relationship('template', 'name')
                     ->label('Template'),
-                // filter user
+
                 SelectFilter::make('user_id')
                     ->relationship('user', 'name')
                     ->label('User'),
-                // filter berdasarkan tanggal dibuat
+
                 \Filament\Tables\Filters\Filter::make('created_at')
                     ->form([
                         \Filament\Forms\Components\DatePicker::make('from'),
@@ -55,6 +61,12 @@ class GeneratedDocumentsTable
                     }),
             ])
             ->actions([
+                ViewAction::make() // <-- sekarang aman
+                ->modalHeading('Detail Data Terisi')
+                    ->modalContent(fn ($record) => view('filament.modals.view-filled-data', [
+                        'data' => $record->filled_data,
+                    ])),
+
                 Action::make('download')
                     ->label('Download')
                     ->icon('heroicon-o-arrow-down-tray')

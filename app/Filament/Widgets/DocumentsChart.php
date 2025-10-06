@@ -8,6 +8,9 @@ use Filament\Widgets\ChartWidget;
 
 class DocumentsChart extends ChartWidget
 {
+
+    protected static bool $isLazy = true;
+
     protected ?string $heading = 'Dokumen Dihasilkan (6 Bulan Terakhir)';
     protected static ?int $sort = 2; // Urutan widget
 

@@ -17,22 +17,11 @@ class TemplatesTable
     {
         return $table
             ->columns([
-                TextColumn::make('user.name')
-                    ->searchable(),
-                TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('file_path')
-                    ->searchable(),
-                IconColumn::make('is_public')
-                    ->boolean(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('user.name')->searchable(),
+                TextColumn::make('name')->searchable(),
+                TextColumn::make('file_path')->searchable(),
+                TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -42,8 +31,8 @@ class TemplatesTable
                     ->label('Generate')
                     ->icon('heroicon-o-document-arrow-down')
                     ->url(fn (Template $record): string => route('generate.show', $record))
-                    ->openUrlInNewTab(), // Buka di tab baru
-                EditAction::make(),
+                    ->openUrlInNewTab(),
+                EditAction::make(), // ✅ hanya ada Edit, tanpa Detail
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

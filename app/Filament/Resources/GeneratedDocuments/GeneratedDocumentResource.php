@@ -19,7 +19,7 @@ class GeneratedDocumentResource extends Resource
 {
     protected static ?string $model = GeneratedDocument::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|null|BackedEnum $navigationIcon = 'heroicon-o-archive-box';
 
     protected static ?string $recordTitleAttribute = 'id';
 

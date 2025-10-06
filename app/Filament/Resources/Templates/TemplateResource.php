@@ -7,24 +7,23 @@ use App\Filament\Resources\Templates\Pages\EditTemplate;
 use App\Filament\Resources\Templates\Pages\ListTemplates;
 use App\Filament\Resources\Templates\Schemas\TemplateForm;
 use App\Filament\Resources\Templates\Tables\TemplatesTable;
+use App\Filament\Resources\Templates\RelationManagers\FormFieldsRelationManager;
 use App\Models\Template;
-use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
 class TemplateResource extends Resource
 {
     protected static ?string $model = Template::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
     protected static ?string $recordTitleAttribute = 'name';
+
+    protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-document-duplicate';
 
     public static function form(Schema $schema): Schema
     {
-        return TemplateForm::configure($schema);
+        return $schema->schema(TemplateForm::schema());
     }
 
     public static function table(Table $table): Table
@@ -35,7 +34,7 @@ class TemplateResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            FormFieldsRelationManager::class,
         ];
     }
 

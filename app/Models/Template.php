@@ -19,6 +19,7 @@ class Template extends Model
         return $this->hasMany(FormField::class)->orderBy('order');
     }
 
+
     public function generatedDocuments(): HasMany
     {
         return $this->hasMany(GeneratedDocument::class);
